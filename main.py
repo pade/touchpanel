@@ -20,22 +20,29 @@ from kivy.uix.button import Button
 
 class TouchPanelButton(Button):
     index = NumericProperty(0)
-    activated = BooleanProperty(False)
+    isset = BooleanProperty(False)
     
     def on_press(self):
-        self.activated = not self.activated
+        self.isset = not self.isset
         #if self.activated:
         #    self.background_color = [1,1,1,1]
         #else:
         #    self.background_color = [1,0,0,1]
             
+class TouchPanelSlider(Slider):
+    index = NumericProperty(0)
+    activate = BooleanProperty(True)
+    
 
 class TouchPanelApp(App):
     def build(self):
-        layout = GridLayout(cols=3)
-        for i in range(9):
-            btn = TouchPanelButton(text="{}".format(i), index=i)
-            layout.add_widget(btn, index=i)
+        layout = GridLayout(cols=6)
+        for i in range(6):
+            sld = TouchPanelSlider(index=i, orientation='vertical', min=0, max=255)
+            layout.add_widget(sld, index=i)
+        #for i in range(9):
+        #    btn = TouchPanelButton(text="{}".format(i), index=i)
+        #    layout.add_widget(btn, index=i)
         return layout
         
 
