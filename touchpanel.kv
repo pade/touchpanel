@@ -1,4 +1,44 @@
 <TouchPanelButton>:
-    font_size: '25sp'
-    background_color: (1,0,0,1) if self.isset else (1,1,1,1)
+    #background_normal: "images/white.png" if self.isset else "images/yellow.png"
+    canvas.after:
+        Color:
+            rgb: (1, 1, 1) if root.isset else (0.3, 0.3, 0.3)
+        Rectangle:
+            pos: self.pos
+            size: self.size   
+
+<TouchPanelSlider>:
+    orientation: 'vertical'
+
+<TouchPanelMain>:
+    menu_layout: menu_layout
+    button_layout: button_layout
+    slider_layout: slider_layout
+    
+    BoxLayout:
+        orientation: 'vertical'
+        spacing: 10
+        padding: 10
         
+        BoxLayout:
+            id: menu_layout
+            spacing: 10
+            orientation: 'horizontal'
+            size_hint: 1, 0.05
+            
+            Label:
+                text: 'TouchPanel'
+                halign: 'center'
+            
+        BoxLayout:
+            id: button_layout
+            spacing: 10
+            orientation: 'horizontal'
+            size_hint: 1, 0.2
+            
+        BoxLayout:
+            id: slider_layout
+            spacing: 10
+            orientation: 'horizontal'
+
+            
