@@ -12,16 +12,26 @@
         spacing: 10
         padding: 10
         
-        BoxLayout:
+        AnchorLayout:
             id: menu_layout
             spacing: 10
             orientation: 'horizontal'
             size_hint: 1, 0.05
+            anchor_x: 'right'
+            anchor_y: 'center'
+            
             
             Label:
                 text: 'TouchPanel'
                 halign: 'center'
             
+            Button:
+                size_hint: 0.05, 1
+                on_release: root.app.open_settings()
+                Image:
+                    source: 'images/config.png'
+                    size_hint: 1, 1
+                    #y: self.parent.y            
         BoxLayout:
             id: button_layout
             spacing: 10

@@ -72,8 +72,38 @@ class TouchPanelMain(BoxLayout):
             
     
 class TouchPanelApp(App):
+    
     def build(self):
         return TouchPanelMain(app=self)
+    
+    def build_config(self, config):
+        config.add_section('monome')
+        config.set('monome', 'prefix', 'touchpanel')
+        config.add_section('network')
+        config.set('network', 'host', '127.0.0.1')
+        config.set('network', 'receive_port', '9001')
+        config.set('network', 'send_port', '9000')
+
+    def build_settings(self, settings):
+        data = '''[
+            { "type": "title", "title": "Monome configuration" },
+            { "type": "string", "title": "Prefix",
+              "desc": "Monome prefix to use",
+              "section": "monome", "key": "prefix" },
+
+
+            { "type": "title", "title": "Network configuration" },
+            { "type": "string", "title": "Host",
+              "desc": "Host or ip address to use",
+              "section": "network", "key": "host" },
+            { "type": "numeric", "title": "Send port",
+              "desc": "Send port to use, from 1024 to 65535",
+              "section": "network", "key": "send_port" },
+            { "type": "numeric", "title": "Receive port",
+              "desc": "Receive port to use, from 1024 to 65535",
+              "section": "network", "key": "receive_port" }
+        ]'''
+        settings.add_json_panel('TouchPanel', self.config, data=data)
 
 
 if __name__ == '__main__':

@@ -84,13 +84,13 @@ android.minapi = 17
 android.sdk = 24.4.1
 
 # (str) Android NDK version to use
-android.ndk = 13b
+android.ndk = 10.3.2
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = /home/dassier/crystax-ndk-10.3.2
+android.ndk_path = /home/dassier/.buildozer/android/platform/crystax-ndk-10.3.2
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 #android.sdk_path =
