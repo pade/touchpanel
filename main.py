@@ -7,30 +7,40 @@ Created on 27 janv. 2017
 '''
 
 import kivy
-from kivy.uix.boxlayout import BoxLayout
 kivy.require('1.9.1')
 
 from kivy.uix.slider import Slider
 from kivy.app import App
-from kivy.uix.gridlayout import GridLayout
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
 from kivy.properties import BooleanProperty
 from kivy.properties import NumericProperty
 from kivy.properties import StringProperty
-from kivy.uix.button import Button
+from kivy.properties import ListProperty
 
+from kivy.uix.button import Button
 
 class TouchPanelButton(Button):
     index = NumericProperty(0)
     isset = BooleanProperty(False)
+    background_color_normal = ListProperty([1, 1, 1, 0.5])
+    background_color_down = ListProperty([1, 1, 1, 1])
+    
+    def __init__(self, color, **kwargs):
+        super(TouchPanelButton, self).__init__(**kwargs)
+        self.background_normal = ""
+        self.background_down = ""
+        self.background_color_normal = color + [0.5]
+        self.background_color_down = color + [1]
+        self.background_color = self.background_color_normal
     
     def on_press(self):
         self.isset = not self.isset
-        #if self.activated:
-        #    self.background_color = [1,1,1,1]
-        #else:
-        #    self.background_color = [1,0,0,1]
+        if self.isset:
+            self.background_color = self.background_color_down
+        else:
+            self.background_color = self.background_color_normal
+
             
 class TouchPanelSlider(Slider):
     index = NumericProperty(0)
@@ -49,8 +59,11 @@ class TouchPanelMain(BoxLayout):
     def __init__(self, **kwargs):
         super(TouchPanelMain, self).__init__(**kwargs)
         
-        for i in range(6):
-            btn = TouchPanelButton(index=i)
+        color_list = [[1,0,0], [0,0,1], [0,1,0], [1,1,0], [1,0,1], [0,1,1]]
+        i=0
+        for color in color_list:
+            btn = TouchPanelButton(color=color, index=i)
+            i = i+1
             self.button_layout.add_widget(btn)
 
         for i in range(6):
