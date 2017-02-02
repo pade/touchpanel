@@ -21,12 +21,13 @@ from kivy.properties import ListProperty
 
 from OSC import OSCClient, ThreadingOSCServer
 
+
 class TouchPanelButton(ToggleButton):
     index = NumericProperty(0)
     isset = BooleanProperty(False)
     background_color_normal = ListProperty([1, 1, 1, 0.5])
     background_color_down = ListProperty([1, 1, 1, 1])
-    
+
     def __init__(self, color, **kwargs):
         super(TouchPanelButton, self).__init__(**kwargs)
         self.background_normal = ""
@@ -34,18 +35,18 @@ class TouchPanelButton(ToggleButton):
         self.background_color_normal = color + [0.5]
         self.background_color_down = color + [1]
         self.background_color = self.background_color_normal
-    
+
     def on_press(self):
         if self.state == 'down':
             self.background_color = self.background_color_down
         else:
             self.background_color = self.background_color_normal
 
-            
+
 class TouchPanelSlider(Slider):
     index = NumericProperty(0)
     activate = BooleanProperty(True)
-    
+
 
 class TouchPanelMain(BoxLayout):
     '''
@@ -55,46 +56,54 @@ class TouchPanelMain(BoxLayout):
     menu_layout = ObjectProperty(None)
     button_layout = ObjectProperty(None)
     slider_layout = ObjectProperty(None)
-    
+
     def __init__(self, config, **kwargs):
         super(TouchPanelMain, self).__init__(**kwargs)
-        
+
         self.config = config
-        
-        color_list = [[1,0,0], [0,0,1], [0,1,0], [1,1,0], [1,0,1], [0,1,1]]
-        i=0
+
+        color_list = [[1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1]]
+        i = 0
+        btn_list = {}
         for color in color_list:
             btn = TouchPanelButton(color=color, index=i)
             btn.bind(state=self.on_button_state)
-            i = i+1
+            i = i + 1
             self.button_layout.add_widget(btn)
+            btn_list[i] = btn
 
+        slider_list = {}
         for i in range(6):
             sld = TouchPanelSlider(index=i)
             self.slider_layout.add_widget(sld)
-            
+            slider_list[i] = sld
+
         host = self.config.get('network', 'host')
         sport = self.config.getint('network', 'send_port')
         rport = self.config.getint('network', 'receive_port')
         self.client = OSCClient()
         self.client.connect((host, sport))
-        self.server = ThreadingOSCServer((host, rport))    
-            
+        self.server = ThreadingOSCServer((host, rport))
+
         prefix = self.config.get('monome', 'prefix')
-        self.server.addMsgHandler('/{}/button'.format(prefix), )
-    
+        self.server.addMsgHandler('/{}/button'.format(prefix), self.on_button_change)
+
+    def on_button_change(self, addr, tags, data, client_address):
+        print(addr)
+        print(data[0])
+
     def on_button_state(self, instance, value):
         if instance.state == 'down':
             print(1)
         else:
             print(0)
 
-  
+
 class TouchPanelApp(App):
-    
+
     def build(self):
         return TouchPanelMain(self.config, app=self)
-    
+
     def build_config(self, config):
         config.add_section('monome')
         config.set('monome', 'prefix', 'touchpanel')
