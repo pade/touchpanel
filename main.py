@@ -10,6 +10,7 @@ import kivy
 kivy.require('1.9.1')
 
 from kivy.uix.slider import Slider
+from kivy.uix.togglebutton import ToggleButton
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
@@ -18,9 +19,9 @@ from kivy.properties import NumericProperty
 from kivy.properties import StringProperty
 from kivy.properties import ListProperty
 
-from kivy.uix.button import Button
+from OSC import OSCClient, ThreadingOSCServer
 
-class TouchPanelButton(Button):
+class TouchPanelButton(ToggleButton):
     index = NumericProperty(0)
     isset = BooleanProperty(False)
     background_color_normal = ListProperty([1, 1, 1, 0.5])
@@ -35,8 +36,7 @@ class TouchPanelButton(Button):
         self.background_color = self.background_color_normal
     
     def on_press(self):
-        self.isset = not self.isset
-        if self.isset:
+        if self.state == 'down':
             self.background_color = self.background_color_down
         else:
             self.background_color = self.background_color_normal
@@ -56,13 +56,16 @@ class TouchPanelMain(BoxLayout):
     button_layout = ObjectProperty(None)
     slider_layout = ObjectProperty(None)
     
-    def __init__(self, **kwargs):
+    def __init__(self, config, **kwargs):
         super(TouchPanelMain, self).__init__(**kwargs)
+        
+        self.config = config
         
         color_list = [[1,0,0], [0,0,1], [0,1,0], [1,1,0], [1,0,1], [0,1,1]]
         i=0
         for color in color_list:
             btn = TouchPanelButton(color=color, index=i)
+            btn.bind(state=self.on_button_state)
             i = i+1
             self.button_layout.add_widget(btn)
 
@@ -70,11 +73,27 @@ class TouchPanelMain(BoxLayout):
             sld = TouchPanelSlider(index=i)
             self.slider_layout.add_widget(sld)
             
+        host = self.config.get('network', 'host')
+        sport = self.config.getint('network', 'send_port')
+        rport = self.config.getint('network', 'receive_port')
+        self.client = OSCClient()
+        self.client.connect((host, sport))
+        self.server = ThreadingOSCServer((host, rport))    
+            
+        prefix = self.config.get('monome', 'prefix')
+        self.server.addMsgHandler('/{}/button'.format(prefix), )
     
+    def on_button_state(self, instance, value):
+        if instance.state == 'down':
+            print(1)
+        else:
+            print(0)
+
+  
 class TouchPanelApp(App):
     
     def build(self):
-        return TouchPanelMain(app=self)
+        return TouchPanelMain(self.config, app=self)
     
     def build_config(self, config):
         config.add_section('monome')
