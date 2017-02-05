@@ -36,7 +36,7 @@ version = 0.1
 
 # (list) Application requirements
 # comma seperated e.g. requirements = sqlite3,kivy
-requirements = kivy,python3crystax,hostpython3
+requirements = kivy
 
 # (str) Custom source folders for requirements
 # Sets custom source for any requirements with recipes
@@ -84,13 +84,13 @@ android.minapi = 17
 android.sdk = 24.4.1
 
 # (str) Android NDK version to use
-android.ndk = 10.3.2
+#android.ndk = 10.3.2
 
 # (bool) Use --private data storage (True) or --dir public storage (False)
 #android.private_storage = True
 
 # (str) Android NDK directory (if empty, it will be automatically downloaded.)
-android.ndk_path = /home/dassier/.buildozer/android/platform/crystax-ndk-10.3.2
+#android.ndk_path = /home/dassier/.buildozer/android/platform/crystax-ndk-10.3.2
 
 # (str) Android SDK directory (if empty, it will be automatically downloaded.)
 #android.sdk_path =
@@ -177,7 +177,7 @@ android.ndk_path = /home/dassier/.buildozer/android/platform/crystax-ndk-10.3.2
 [buildozer]
 
 # (int) Log level (0 = error only, 1 = info, 2 = debug (with command output))
-log_level = 2
+log_level = 1
 
 # (int) Display warning if buildozer is run as root (0 = False, 1 = True)
 warn_on_root = 1

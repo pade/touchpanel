@@ -7,6 +7,7 @@ Created on 27 janv. 2017
 '''
 
 import kivy
+from distutils.command.config import config
 kivy.require('1.9.1')
 
 from kivy.uix.slider import Slider
@@ -19,8 +20,7 @@ from kivy.properties import NumericProperty
 from kivy.properties import StringProperty
 from kivy.properties import ListProperty
 
-from OSC import OSCClient, ThreadingOSCServer
-
+import oscbackend
 
 class TouchPanelButton(ToggleButton):
     index = NumericProperty(0)
@@ -48,20 +48,20 @@ class TouchPanelSlider(Slider):
     activate = BooleanProperty(True)
 
 
-class TouchPanelMain(BoxLayout):
+class TouchPanelControl(BoxLayout):
     '''
     Main windows
     '''
-    app = ObjectProperty(None)
     menu_layout = ObjectProperty(None)
     button_layout = ObjectProperty(None)
     slider_layout = ObjectProperty(None)
 
-    def __init__(self, config, **kwargs):
-        super(TouchPanelMain, self).__init__(**kwargs)
+    def __init__(self, **kwargs):
+        super(TouchPanelControl, self).__init__(**kwargs)
 
-        self.config = config
-
+        self.app = App.get_running_app()
+        self.config = self.app.config
+        
         color_list = [[1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1]]
         i = 0
         btn_list = {}
@@ -72,55 +72,100 @@ class TouchPanelMain(BoxLayout):
             self.button_layout.add_widget(btn)
             btn_list[i] = btn
 
+        nb_slider = int(self.config.get('interface', 'sliders_nb'))
+
         slider_list = {}
-        for i in range(6):
-            sld = TouchPanelSlider(index=i)
+        for i in range(nb_slider):
+            sld = TouchPanelSlider(index=i, min=0, max=1)
+            sld.bind(value=self.on_slider_value)
             self.slider_layout.add_widget(sld)
             slider_list[i] = sld
 
-        host = self.config.get('network', 'host')
-        sport = self.config.getint('network', 'send_port')
-        rport = self.config.getint('network', 'receive_port')
-        self.client = OSCClient()
-        self.client.connect((host, sport))
-        self.server = ThreadingOSCServer((host, rport))
+        
+        prefix = self.config.get('network', 'prefix')
+        self.app.osc.addhandler('/{}/button/0'.format(prefix), self.on_button_change)
 
-        prefix = self.config.get('monome', 'prefix')
-        self.server.addMsgHandler('/{}/button'.format(prefix), self.on_button_change)
-
+    def on_slider_value(self, instance, value):
+        prefix = self.config.get('network', 'prefix')
+        index = instance.index
+        self.app.osc.send('/{}/slider/{}'.format(prefix, index), float(value))
+    
     def on_button_change(self, addr, tags, data, client_address):
         print(addr)
         print(data[0])
 
     def on_button_state(self, instance, value):
+        prefix = self.config.get('network', 'prefix')
+        index = instance.index
         if instance.state == 'down':
-            print(1)
+            print("1.0")
+            self.app.osc.send('/{}/button/{}'.format(prefix, index), 1.0)
         else:
-            print(0)
+            self.app.osc.send('/{}/button/{}'.format(prefix, index), 0.0)
+            print("0.0")
+        
+        
+class TouchPanelMain(BoxLayout):
+    '''
+    Entry widget
+    '''
+    app = ObjectProperty(None)
 
-
+    def __init__(self, **kwargs):
+        super(TouchPanelMain, self).__init__(**kwargs)
+        self.app = App.get_running_app()
+        self.control = TouchPanelControl()
+        self.add_widget(self.control)
+        
+    def update_cfg(self):
+        self.remove_widget(self.control)
+        self.control = TouchPanelControl()
+        self.add_widget(self.control)
+        
 class TouchPanelApp(App):
+    
+    use_kivy_settings = False
+    
+    def on_config_change(self, config, section, key, value):
+        self.osc.close()
+        host = self.config.get('network', 'host')
+        rport = self.config.getint('network', 'receive_port')
+        self.osc.startServer(host, rport)
+        sport = self.config.getint('network', 'send_port')
+        self.osc.startClient(host, sport)
+        self.root.update_cfg()
 
+            
     def build(self):
-        return TouchPanelMain(self.config, app=self)
+        # Start OSC server and client
+        self.osc = oscbackend.TouchPanelOSCBackend()
+        host = self.config.get('network', 'host')
+        rport = self.config.getint('network', 'receive_port')
+        self.osc.startServer(host, rport)
+        sport = self.config.getint('network', 'send_port')
+        self.osc.startClient(host, sport)
+        
+        return TouchPanelMain()
 
     def build_config(self, config):
-        config.add_section('monome')
-        config.set('monome', 'prefix', 'touchpanel')
+        config.add_section('interface')
+        config.set('interface', 'sliders_nb', '6')
         config.add_section('network')
+        config.set('network', 'prefix', 'touchpanel')
         config.set('network', 'host', '127.0.0.1')
-        config.set('network', 'receive_port', '9001')
-        config.set('network', 'send_port', '9000')
+        config.set('network', 'receive_port', '9000')
+        config.set('network', 'send_port', '7700')
 
     def build_settings(self, settings):
         data = '''[
-            { "type": "title", "title": "Monome configuration" },
+            { "type": "title", "title": "User interface" },
+            { "type": "numeric", "title": "Sliders",
+              "desc": "Number of sliders",
+              "section": "interface", "key": "sliders_nb" },
+            { "type": "title", "title": "Network configuration" },
             { "type": "string", "title": "Prefix",
               "desc": "Monome prefix to use",
-              "section": "monome", "key": "prefix" },
-
-
-            { "type": "title", "title": "Network configuration" },
+              "section": "network", "key": "prefix" },
             { "type": "string", "title": "Host",
               "desc": "Host or ip address to use",
               "section": "network", "key": "host" },
@@ -132,7 +177,10 @@ class TouchPanelApp(App):
               "section": "network", "key": "receive_port" }
         ]'''
         settings.add_json_panel('TouchPanel', self.config, data=data)
-
+        
+    def on_stop(self):
+        self.osc.close()
 
 if __name__ == '__main__':
     TouchPanelApp().run()
+    

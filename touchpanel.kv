@@ -2,7 +2,7 @@
 <TouchPanelSlider>:
     orientation: 'vertical'
 
-<TouchPanelMain>:
+<TouchPanelControl>:
     menu_layout: menu_layout
     button_layout: button_layout
     slider_layout: slider_layout
@@ -28,10 +28,11 @@
             Button:
                 size_hint: 0.05, 1
                 on_release: root.app.open_settings()
+                backgound_normal: ''
                 Image:
                     source: 'images/config.png'
-                    size_hint: 1, 1
-                    #y: self.parent.y            
+                    allow_stretch: True
+           
         BoxLayout:
             id: button_layout
             spacing: 10
