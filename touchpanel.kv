@@ -1,4 +1,3 @@
-
 <TouchPanelSlider>:
     orientation: 'vertical'
 
@@ -20,16 +19,20 @@
             anchor_x: 'right'
             anchor_y: 'center'
             
-            
             Label:
+                text_size: self.size
                 text: 'TouchPanel'
                 halign: 'center'
-            
+
+            IpAddress:
+                text_size: self.size
+                id: ip_address
+                halign: 'left'
+                
             ImageButton:
                 size_hint: 0.05, 1
                 on_release: root.app.open_settings()
                 source: 'images/config.png'
-                allow_stretch: True
            
         BoxLayout:
             id: button_layout
@@ -41,5 +44,6 @@
             id: slider_layout
             spacing: 10
             orientation: 'horizontal'
-
-            
+        BoxLayout:
+            id: footer_layout
+            size_hint: 1, 0.1

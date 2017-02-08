@@ -7,6 +7,7 @@ Created on 27 janv. 2017
 '''
 
 import kivy
+import socket
 from distutils.command.config import config
 kivy.require('1.9.1')
 
@@ -16,6 +17,7 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.label import Label
 from kivy.properties import ObjectProperty
 from kivy.properties import BooleanProperty
 from kivy.properties import NumericProperty
@@ -51,7 +53,11 @@ class ImageButton(ButtonBehavior, Image):
 class TouchPanelSlider(Slider):
     index = NumericProperty(0)
     activate = BooleanProperty(True)
-
+    
+class IpAddress(Label):
+    ip_address = ObjectProperty(None)
+    text = StringProperty("@" + socket.gethostbyname(socket.gethostname()))
+    
 
 class TouchPanelControl(BoxLayout):
     '''
@@ -60,6 +66,7 @@ class TouchPanelControl(BoxLayout):
     menu_layout = ObjectProperty(None)
     button_layout = ObjectProperty(None)
     slider_layout = ObjectProperty(None)
+    footer_layout = ObjectProperty(None)
 
     def __init__(self, **kwargs):
         super(TouchPanelControl, self).__init__(**kwargs)
