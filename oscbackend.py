@@ -6,7 +6,7 @@ Created on 3 févr. 2017
 '''
 
 import OSC
-from Cython.Shadow import address
+import threading
 
 class TouchPanelOSCBackend(object):
     '''
@@ -25,9 +25,12 @@ class TouchPanelOSCBackend(object):
         
     def startServer(self, address='127.0.0.1', port=9900):
         self.server = OSC.ThreadingOSCServer((address, port))
+        self.server_thread = threading.Thread(target=self.server.serve_forever)
+        self.server_thread.start()
         
     def closeServer(self):
         self.server.close()
+        self.server_thread.join()
 
     def closeClient(self):
         self.client.close()

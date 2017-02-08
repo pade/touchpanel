@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE Workspace>
-<Workspace xmlns="http://www.qlcplus.org/Workspace" CurrentWindow="InputOutputManager">
+<Workspace xmlns="http://www.qlcplus.org/Workspace" CurrentWindow="VirtualConsole">
  <Creator>
   <Name>Q Light Controller Plus</Name>
   <Version>4.10.4</Version>
@@ -128,7 +128,7 @@
      <BackgroundImage>None</BackgroundImage>
      <Font>Default</Font>
     </Appearance>
-    <WindowState Visible="False" X="275" Y="155" Width="380" Height="220"/>
+    <WindowState Visible="True" X="275" Y="155" Width="380" Height="220"/>
     <AllowChildren>False</AllowChildren>
     <AllowResize>False</AllowResize>
     <ShowHeader>False</ShowHeader>
@@ -136,7 +136,7 @@
     <Collapsed>False</Collapsed>
     <Disabled>False</Disabled>
     <Slider Caption="Fader 1" ID="1" WidgetStyle="Slider" InvertedAppearance="false">
-     <WindowState Visible="False" X="10" Y="10" Width="60" Height="200"/>
+     <WindowState Visible="True" X="10" Y="10" Width="60" Height="200"/>
      <Appearance>
       <FrameStyle>Sunken</FrameStyle>
       <ForegroundColor>Default</ForegroundColor>
@@ -144,6 +144,7 @@
       <BackgroundImage>None</BackgroundImage>
       <Font>Default</Font>
      </Appearance>
+     <Input Universe="0" Channel="59252"/>
      <SliderMode ValueDisplayStyle="Percentage" ClickAndGoType="None" Monitor="false">Level</SliderMode>
      <Level LowLimit="0" HighLimit="255" Value="0">
       <Channel Fixture="0">0</Channel>
@@ -153,7 +154,7 @@
      </Playback>
     </Slider>
     <Slider Caption="Fader 2" ID="2" WidgetStyle="Slider" InvertedAppearance="false">
-     <WindowState Visible="False" X="70" Y="10" Width="60" Height="200"/>
+     <WindowState Visible="True" X="70" Y="10" Width="60" Height="200"/>
      <Appearance>
       <FrameStyle>Sunken</FrameStyle>
       <ForegroundColor>Default</ForegroundColor>
@@ -170,7 +171,7 @@
      </Playback>
     </Slider>
     <Slider Caption="Fader 3" ID="3" WidgetStyle="Slider" InvertedAppearance="false">
-     <WindowState Visible="False" X="130" Y="10" Width="60" Height="200"/>
+     <WindowState Visible="True" X="130" Y="10" Width="60" Height="200"/>
      <Appearance>
       <FrameStyle>Sunken</FrameStyle>
       <ForegroundColor>Default</ForegroundColor>
@@ -187,7 +188,7 @@
      </Playback>
     </Slider>
     <Slider Caption="Fader 4" ID="4" WidgetStyle="Slider" InvertedAppearance="false">
-     <WindowState Visible="False" X="190" Y="10" Width="60" Height="200"/>
+     <WindowState Visible="True" X="190" Y="10" Width="60" Height="200"/>
      <Appearance>
       <FrameStyle>Sunken</FrameStyle>
       <ForegroundColor>Default</ForegroundColor>
@@ -202,7 +203,7 @@
      </Playback>
     </Slider>
     <Slider Caption="Fader 5" ID="5" WidgetStyle="Slider" InvertedAppearance="false">
-     <WindowState Visible="False" X="250" Y="10" Width="60" Height="200"/>
+     <WindowState Visible="True" X="250" Y="10" Width="60" Height="200"/>
      <Appearance>
       <FrameStyle>Sunken</FrameStyle>
       <ForegroundColor>Default</ForegroundColor>
@@ -219,7 +220,7 @@
      </Playback>
     </Slider>
     <Slider Caption="Fader 6" ID="6" WidgetStyle="Slider" InvertedAppearance="false">
-     <WindowState Visible="False" X="310" Y="10" Width="60" Height="200"/>
+     <WindowState Visible="True" X="310" Y="10" Width="60" Height="200"/>
      <Appearance>
       <FrameStyle>Sunken</FrameStyle>
       <ForegroundColor>Default</ForegroundColor>
@@ -237,7 +238,7 @@
     </Slider>
    </Frame>
    <Button Caption="Red" ID="9" Icon="">
-    <WindowState Visible="False" X="290" Y="55" Width="50" Height="50"/>
+    <WindowState Visible="True" X="290" Y="55" Width="50" Height="50"/>
     <Appearance>
      <FrameStyle>None</FrameStyle>
      <ForegroundColor>Default</ForegroundColor>
@@ -248,10 +249,10 @@
     <Function ID="0"/>
     <Action>Toggle</Action>
     <Intensity Adjust="False">100</Intensity>
-    <Input Universe="0" Channel="13957"/>
+    <Input Universe="0" Channel="63220"/>
    </Button>
    <Button Caption="Blue" ID="10" Icon="">
-    <WindowState Visible="False" X="340" Y="55" Width="50" Height="50"/>
+    <WindowState Visible="True" X="340" Y="55" Width="50" Height="50"/>
     <Appearance>
      <FrameStyle>None</FrameStyle>
      <ForegroundColor>Default</ForegroundColor>
@@ -262,9 +263,10 @@
     <Function ID="2"/>
     <Action>Toggle</Action>
     <Intensity Adjust="False">100</Intensity>
+    <Input Universe="0" Channel="59261"/>
    </Button>
    <Button Caption="Green" ID="11" Icon="">
-    <WindowState Visible="False" X="390" Y="55" Width="50" Height="50"/>
+    <WindowState Visible="True" X="390" Y="55" Width="50" Height="50"/>
     <Appearance>
      <FrameStyle>None</FrameStyle>
      <ForegroundColor>Default</ForegroundColor>
@@ -275,9 +277,10 @@
     <Function ID="1"/>
     <Action>Toggle</Action>
     <Intensity Adjust="False">100</Intensity>
+    <Input Universe="0" Channel="54758"/>
    </Button>
    <Button Caption="Yellow" ID="12" Icon="">
-    <WindowState Visible="False" X="440" Y="55" Width="50" Height="50"/>
+    <WindowState Visible="True" X="440" Y="55" Width="50" Height="50"/>
     <Appearance>
      <FrameStyle>None</FrameStyle>
      <ForegroundColor>Default</ForegroundColor>
@@ -290,7 +293,7 @@
     <Intensity Adjust="False">100</Intensity>
    </Button>
    <Button Caption="Pink" ID="13" Icon="">
-    <WindowState Visible="False" X="490" Y="55" Width="50" Height="50"/>
+    <WindowState Visible="True" X="490" Y="55" Width="50" Height="50"/>
     <Appearance>
      <FrameStyle>None</FrameStyle>
      <ForegroundColor>Default</ForegroundColor>
@@ -303,7 +306,7 @@
     <Intensity Adjust="False">100</Intensity>
    </Button>
    <Button Caption="Cyan" ID="14" Icon="">
-    <WindowState Visible="False" X="540" Y="55" Width="50" Height="50"/>
+    <WindowState Visible="True" X="540" Y="55" Width="50" Height="50"/>
     <Appearance>
      <FrameStyle>None</FrameStyle>
      <ForegroundColor>Default</ForegroundColor>

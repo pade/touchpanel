@@ -12,6 +12,8 @@ kivy.require('1.9.1')
 
 from kivy.uix.slider import Slider
 from kivy.uix.togglebutton import ToggleButton
+from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.image import Image
 from kivy.app import App
 from kivy.uix.boxlayout import BoxLayout
 from kivy.properties import ObjectProperty
@@ -25,14 +27,14 @@ import oscbackend
 class TouchPanelButton(ToggleButton):
     index = NumericProperty(0)
     isset = BooleanProperty(False)
-    background_color_normal = ListProperty([1, 1, 1, 0.5])
+    background_color_normal = ListProperty([1, 1, 1, 1])
     background_color_down = ListProperty([1, 1, 1, 1])
 
     def __init__(self, color, **kwargs):
         super(TouchPanelButton, self).__init__(**kwargs)
         self.background_normal = ""
         self.background_down = ""
-        self.background_color_normal = color + [0.5]
+        self.background_color_normal = color + [0.4]
         self.background_color_down = color + [1]
         self.background_color = self.background_color_normal
 
@@ -42,6 +44,9 @@ class TouchPanelButton(ToggleButton):
         else:
             self.background_color = self.background_color_normal
 
+
+class ImageButton(ButtonBehavior, Image):
+    pass
 
 class TouchPanelSlider(Slider):
     index = NumericProperty(0)
@@ -61,6 +66,7 @@ class TouchPanelControl(BoxLayout):
 
         self.app = App.get_running_app()
         self.config = self.app.config
+        prefix = self.config.get('network', 'prefix')
         
         color_list = [[1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1]]
         i = 0
@@ -68,9 +74,11 @@ class TouchPanelControl(BoxLayout):
         for color in color_list:
             btn = TouchPanelButton(color=color, index=i)
             btn.bind(state=self.on_button_state)
+            self.app.osc.addhandler('/{}/button/{}'.format(prefix, i), self.on_button_change)
             i = i + 1
             self.button_layout.add_widget(btn)
             btn_list[i] = btn
+
 
         nb_slider = int(self.config.get('interface', 'sliders_nb'))
 
@@ -81,27 +89,26 @@ class TouchPanelControl(BoxLayout):
             self.slider_layout.add_widget(sld)
             slider_list[i] = sld
 
-        
-        prefix = self.config.get('network', 'prefix')
-        self.app.osc.addhandler('/{}/button/0'.format(prefix), self.on_button_change)
-
     def on_slider_value(self, instance, value):
         prefix = self.config.get('network', 'prefix')
         index = instance.index
         self.app.osc.send('/{}/slider/{}'.format(prefix, index), float(value))
     
     def on_button_change(self, addr, tags, data, client_address):
-        print(addr)
-        print(data[0])
+        index = addr.split('/')[-1]
+        if data[0] == 1.0:
+            self.btn_list[index].state = 'down'
 
     def on_button_state(self, instance, value):
         prefix = self.config.get('network', 'prefix')
         index = instance.index
         if instance.state == 'down':
             print("1.0")
+            self.app.osc.send('/{}/button/{}'.format(prefix, index), 0.0)
             self.app.osc.send('/{}/button/{}'.format(prefix, index), 1.0)
         else:
             self.app.osc.send('/{}/button/{}'.format(prefix, index), 0.0)
+            self.app.osc.send('/{}/button/{}'.format(prefix, index), 1.0)
             print("0.0")
         
         

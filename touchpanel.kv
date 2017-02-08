@@ -25,13 +25,11 @@
                 text: 'TouchPanel'
                 halign: 'center'
             
-            Button:
+            ImageButton:
                 size_hint: 0.05, 1
                 on_release: root.app.open_settings()
-                backgound_normal: ''
-                Image:
-                    source: 'images/config.png'
-                    allow_stretch: True
+                source: 'images/config.png'
+                allow_stretch: True
            
         BoxLayout:
             id: button_layout
