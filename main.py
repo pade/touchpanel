@@ -150,7 +150,7 @@ class TouchPanelApp(App):
         self.osc.close()
         host = self.config.get('network', 'host')
         rport = self.config.getint('network', 'receive_port')
-        self.osc.startServer(host, rport)
+        #self.osc.startServer(host, rport)
         sport = self.config.getint('network', 'send_port')
         self.osc.startClient(host, sport)
         self.root.update_cfg()
@@ -161,7 +161,7 @@ class TouchPanelApp(App):
         self.osc = oscbackend.TouchPanelOSCBackend()
         host = self.config.get('network', 'host')
         rport = self.config.getint('network', 'receive_port')
-        self.osc.startServer(host, rport)
+        #self.osc.startServer(host, rport)
         sport = self.config.getint('network', 'send_port')
         self.osc.startClient(host, sport)
         

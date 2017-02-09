@@ -53,4 +53,15 @@ class TouchPanelOSCBackend(object):
             self.client.send(msg)
         except OSC.OSCClientError as e:
             print (e)
-        
+            
+            
+def on_button(addr, tags, data, client_address):
+    print(addr)
+    print(data[0])
+    
+if __name__ == '__main__':
+    osc = TouchPanelOSCBackend()
+    osc.startServer('127.0.0.1', 9000)
+    osc.addhandler("/tp/button/0", on_button)
+  
+    
