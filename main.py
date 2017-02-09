@@ -77,14 +77,15 @@ class TouchPanelControl(BoxLayout):
         
         color_list = [[1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1]]
         i = 0
-        btn_list = {}
+        self.btn_list = {}
         for color in color_list:
             btn = TouchPanelButton(color=color, index=i)
             btn.bind(state=self.on_button_state)
             self.app.osc.addhandler('/{}/button/{}'.format(prefix, i), self.on_button_change)
-            i = i + 1
             self.button_layout.add_widget(btn)
-            btn_list[i] = btn
+            self.btn_list[i] = btn
+            i = i + 1
+
 
 
         nb_slider = int(self.config.get('interface', 'sliders_nb'))
@@ -102,7 +103,7 @@ class TouchPanelControl(BoxLayout):
         self.app.osc.send('/{}/slider/{}'.format(prefix, index), float(value))
     
     def on_button_change(self, addr, tags, data, client_address):
-        index = addr.split('/')[-1]
+        index = int(addr.split('/')[-1])
         if data[0] == 1.0:
             self.btn_list[index].state = 'down'
 
@@ -110,13 +111,9 @@ class TouchPanelControl(BoxLayout):
         prefix = self.config.get('network', 'prefix')
         index = instance.index
         if instance.state == 'down':
-            print("1.0")
-            self.app.osc.send('/{}/button/{}'.format(prefix, index), 0.0)
             self.app.osc.send('/{}/button/{}'.format(prefix, index), 1.0)
         else:
             self.app.osc.send('/{}/button/{}'.format(prefix, index), 0.0)
-            self.app.osc.send('/{}/button/{}'.format(prefix, index), 1.0)
-            print("0.0")
         
         
 class TouchPanelMain(BoxLayout):
