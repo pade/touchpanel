@@ -8,7 +8,7 @@ Created on 27 janv. 2017
 
 import kivy
 import socket
-from distutils.command.config import config
+import math
 kivy.require('1.9.1')
 
 from kivy.uix.slider import Slider
@@ -81,22 +81,27 @@ class TouchPanelControl(BoxLayout):
         for color in color_list:
             btn = TouchPanelButton(color=color, index=i)
             btn.bind(state=self.on_button_state)
-            self.app.osc.addhandler('/{}/button/{}'.format(prefix, i), self.on_button_change)
+            #self.app.osc.addhandler('/{}/button/{}'.format(prefix, i), self.on_button_change)
             self.button_layout.add_widget(btn)
             self.btn_list[i] = btn
             i = i + 1
 
-
-
         nb_slider = int(self.config.get('interface', 'sliders_nb'))
 
-        slider_list = {}
+        self.slider_list = {}
         for i in range(nb_slider):
             sld = TouchPanelSlider(index=i, min=0, max=1)
             sld.bind(value=self.on_slider_value)
+            #self.app.osc.addhandler('/{}/slider/{}'.format(prefix, i), self.on_slider_change)
             self.slider_layout.add_widget(sld)
-            slider_list[i] = sld
+            self.slider_list[i] = sld
 
+    def on_slider_change(self, addr, tags, data, client_address):
+        index = int(addr.split('/')[-1])
+        
+        if math.fabs(data[0] - self.slider_list[index].value) > 0.01:
+            self.slider_list[index].value = data[0]
+    
     def on_slider_value(self, instance, value):
         prefix = self.config.get('network', 'prefix')
         index = instance.index
@@ -105,8 +110,12 @@ class TouchPanelControl(BoxLayout):
     def on_button_change(self, addr, tags, data, client_address):
         index = int(addr.split('/')[-1])
         if data[0] == 1.0:
-            self.btn_list[index].state = 'down'
-
+            print ('down')
+            #self.btn_list[index].state = 'down'
+        else:
+            print('normal')
+            #self.btn_list[index].state = 'normal'
+            
     def on_button_state(self, instance, value):
         prefix = self.config.get('network', 'prefix')
         index = instance.index
