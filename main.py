@@ -110,11 +110,9 @@ class TouchPanelControl(BoxLayout):
     def on_button_change(self, addr, tags, data, client_address):
         index = int(addr.split('/')[-1])
         if data[0] == 1.0:
-            print ('down')
-            #self.btn_list[index].state = 'down'
+            self.btn_list[index].state = 'down'
         else:
-            print('normal')
-            #self.btn_list[index].state = 'normal'
+            self.btn_list[index].state = 'normal'
             
     def on_button_state(self, instance, value):
         prefix = self.config.get('network', 'prefix')
@@ -199,7 +197,8 @@ class TouchPanelApp(App):
         settings.add_json_panel('TouchPanel', self.config, data=data)
         
     def on_stop(self):
-        self.osc.close()
+        #self.osc.close()
+        self.osc.closeClient()
 
 if __name__ == '__main__':
     TouchPanelApp().run()

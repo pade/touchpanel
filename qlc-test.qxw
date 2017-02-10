@@ -10,9 +10,6 @@
   <InputOutputMap>
    <Universe Name="Universe 1" ID="0">
     <Input Plugin="OSC" Line="4" Profile="Pade TouchPanel"/>
-    <Output Plugin="OSC" Line="4">
-     <PluginParameters feedbackIP="192.168.56.1" outputIP="192.168.56.1"/>
-    </Output>
    </Universe>
    <Universe Name="Universe 2" ID="1"/>
    <Universe Name="Universe 3" ID="2"/>
@@ -254,7 +251,7 @@
      <Font>Default</Font>
     </Appearance>
     <Function ID="0"/>
-    <Action>Toggle</Action>
+    <Action>Flash</Action>
     <Intensity Adjust="False">100</Intensity>
     <Input Universe="0" Channel="63220"/>
    </Button>
@@ -268,7 +265,7 @@
      <Font>Default</Font>
     </Appearance>
     <Function ID="2"/>
-    <Action>Toggle</Action>
+    <Action>Flash</Action>
     <Intensity Adjust="False">100</Intensity>
     <Input Universe="0" Channel="59261"/>
    </Button>
@@ -282,7 +279,7 @@
      <Font>Default</Font>
     </Appearance>
     <Function ID="1"/>
-    <Action>Toggle</Action>
+    <Action>Flash</Action>
     <Intensity Adjust="False">100</Intensity>
     <Input Universe="0" Channel="54758"/>
    </Button>
@@ -296,7 +293,7 @@
      <Font>Default</Font>
     </Appearance>
     <Function ID="3"/>
-    <Action>Toggle</Action>
+    <Action>Flash</Action>
     <Intensity Adjust="False">100</Intensity>
     <Input Universe="0" Channel="50287"/>
    </Button>
@@ -310,7 +307,7 @@
      <Font>Default</Font>
     </Appearance>
     <Function ID="4"/>
-    <Action>Toggle</Action>
+    <Action>Flash</Action>
     <Intensity Adjust="False">100</Intensity>
     <Input Universe="0" Channel="45264"/>
    </Button>
@@ -324,7 +321,7 @@
      <Font>Default</Font>
     </Appearance>
     <Function ID="5"/>
-    <Action>Toggle</Action>
+    <Action>Flash</Action>
     <Intensity Adjust="False">100</Intensity>
     <Input Universe="0" Channel="41305"/>
    </Button>
