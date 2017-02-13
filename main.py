@@ -28,31 +28,12 @@ import oscbackend
 
 class TouchPanelButton(ToggleButton):
     index = NumericProperty(0)
-    isset = BooleanProperty(False)
-    background_color_normal = ListProperty([1, 1, 1, 1])
-    background_color_down = ListProperty([1, 1, 1, 1])
-
-    def __init__(self, color, **kwargs):
-        super(TouchPanelButton, self).__init__(**kwargs)
-        self.background_normal = ""
-        self.background_down = ""
-        self.background_color_normal = color + [0.4]
-        self.background_color_down = color + [1]
-        self.background_color = self.background_color_normal
-
-    def on_press(self):
-        if self.state == 'down':
-            self.background_color = self.background_color_down
-        else:
-            self.background_color = self.background_color_normal
-
-
+    
 class ImageButton(ButtonBehavior, Image):
     pass
 
 class TouchPanelSlider(Slider):
     index = NumericProperty(0)
-    activate = BooleanProperty(True)
     
 class IpAddress(Label):
     ip_address = ObjectProperty(None)
@@ -73,18 +54,16 @@ class TouchPanelControl(BoxLayout):
 
         self.app = App.get_running_app()
         self.config = self.app.config
-        prefix = self.config.get('network', 'prefix')
         
-        color_list = [[1, 0, 0], [0, 0, 1], [0, 1, 0], [1, 1, 0], [1, 0, 1], [0, 1, 1]]
-        i = 0
+        nb_button = int(self.config.get('interface', 'buttons_nb'))
+
+        
         self.btn_list = {}
-        for color in color_list:
-            btn = TouchPanelButton(color=color, index=i)
+        for i in range(nb_button):
+            btn = TouchPanelButton(index=i)
             btn.bind(state=self.on_button_state)
-            #self.app.osc.addhandler('/{}/button/{}'.format(prefix, i), self.on_button_change)
             self.button_layout.add_widget(btn)
             self.btn_list[i] = btn
-            i = i + 1
 
         nb_slider = int(self.config.get('interface', 'sliders_nb'))
 
@@ -92,7 +71,6 @@ class TouchPanelControl(BoxLayout):
         for i in range(nb_slider):
             sld = TouchPanelSlider(index=i, min=0, max=1)
             sld.bind(value=self.on_slider_value)
-            #self.app.osc.addhandler('/{}/slider/{}'.format(prefix, i), self.on_slider_change)
             self.slider_layout.add_widget(sld)
             self.slider_list[i] = sld
 
@@ -145,21 +123,16 @@ class TouchPanelApp(App):
     use_kivy_settings = False
     
     def on_config_change(self, config, section, key, value):
-        self.osc.close()
+        self.osc.closeClient()
         host = self.config.get('network', 'host')
-        rport = self.config.getint('network', 'receive_port')
-        #self.osc.startServer(host, rport)
         sport = self.config.getint('network', 'send_port')
         self.osc.startClient(host, sport)
         self.root.update_cfg()
 
             
     def build(self):
-        # Start OSC server and client
         self.osc = oscbackend.TouchPanelOSCBackend()
         host = self.config.get('network', 'host')
-        rport = self.config.getint('network', 'receive_port')
-        #self.osc.startServer(host, rport)
         sport = self.config.getint('network', 'send_port')
         self.osc.startClient(host, sport)
         
@@ -168,15 +141,18 @@ class TouchPanelApp(App):
     def build_config(self, config):
         config.add_section('interface')
         config.set('interface', 'sliders_nb', '6')
+        config.set('interface', 'buttons_nb', '6')
         config.add_section('network')
-        config.set('network', 'prefix', 'touchpanel')
+        config.set('network', 'prefix', 'tp')
         config.set('network', 'host', '127.0.0.1')
-        config.set('network', 'receive_port', '9000')
         config.set('network', 'send_port', '7700')
 
     def build_settings(self, settings):
         data = '''[
             { "type": "title", "title": "User interface" },
+            { "type": "numeric", "title": "Buttons",
+              "desc": "Number of buttons",
+              "section": "interface", "key": "buttons_nb" },
             { "type": "numeric", "title": "Sliders",
               "desc": "Number of sliders",
               "section": "interface", "key": "sliders_nb" },
@@ -189,10 +165,7 @@ class TouchPanelApp(App):
               "section": "network", "key": "host" },
             { "type": "numeric", "title": "Send port",
               "desc": "Send port to use, from 1024 to 65535",
-              "section": "network", "key": "send_port" },
-            { "type": "numeric", "title": "Receive port",
-              "desc": "Receive port to use, from 1024 to 65535",
-              "section": "network", "key": "receive_port" }
+              "section": "network", "key": "send_port" }
         ]'''
         settings.add_json_panel('TouchPanel', self.config, data=data)
         

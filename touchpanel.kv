@@ -1,3 +1,15 @@
+<TouchPanelButton>:
+    canvas:
+        Clear
+        Color:
+            rgb: (1, 1, 1)
+        BorderImage:
+            border: (16, 16, 16, 16)
+            auto_scale: True
+            pos: self.pos
+            size: self.size
+            source: 'images/button_normal.png' if self.state == 'normal' else 'images/button_down.png'
+            
 <TouchPanelSlider>:
     orientation: 'vertical'
 
@@ -8,7 +20,7 @@
     
     BoxLayout:
         orientation: 'vertical'
-        spacing: 10
+        spacing: 25
         padding: 10
         
         AnchorLayout:
@@ -36,7 +48,7 @@
            
         BoxLayout:
             id: button_layout
-            spacing: 10
+            spacing: 25
             orientation: 'horizontal'
             size_hint: 1, 0.2
             
